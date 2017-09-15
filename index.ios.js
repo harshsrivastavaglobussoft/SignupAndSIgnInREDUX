@@ -15,7 +15,6 @@ import {createStore} from 'redux';
 import {Provider} from 'react-redux';
 import AllReducer from './Reducers/index';
 import App from './Component/app';
-
 const store = createStore(AllReducer);
 
 export default class LoginDemoRedux extends Component {

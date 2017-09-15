@@ -1,16 +1,19 @@
 import{addUser,getArray} from './user-reducer';
+export var initialstate = {
+  emailid : '',
+  password : '',
+  error : ''
+};
 
-export default function(state=null,action){
+export default function(state=initialstate,action){
 
    switch (action.type) {
      case "LOGNIN_ACTION":
-          console.log('payload for log in user:*-*-*-*'+action.payload.emailid);
           let array = getArray();
-          console.log("=======Arrrayyy"+array);
           for (var i = 0; i < array.length; i++) {
              if (array[i].emailid === action.payload.emailid) {
                 if(array[i].password === action.payload.password){
-                    return {code:200, user:array[i]};
+                    return {code:200, emailid:array[i].emailid ,name:array[i].name,password:array[i].password};
                 }
                 else {
                   return state
@@ -20,10 +23,26 @@ export default function(state=null,action){
           return state
           break;
       case "LOG_OUT_ACTION":
-             console.log("===LOG OUT++++++++",action);
              action.payload.props.navigation.goBack();
-             return null;
+             return state;
              break;
+
+       case "EMAIL_LOGIN":
+          let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
+          if(reg.test(action.payload) === false)
+          {
+           return{...state, emailid:action.payload, error:"Enter a valid Email Id"};
+          }
+          return{...state, emailid:action.payload, error:""};
+          break;
+      case "PASSWORD_LOGIN":
+          let val = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/ ;
+          if(val.test(action.payload) === false)
+          {
+           return{...state, password:action.payload, error:"Password must have min 8 characters,1 uppercase, 1 lowercase letter and 1 number"};
+          }
+          return{...state, password:action.payload,error:""};
+          break;
    }
    return state;
 }

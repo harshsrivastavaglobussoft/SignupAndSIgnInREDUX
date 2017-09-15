@@ -10,15 +10,14 @@ import {
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {login} from '../Actions/index';
+import {login,emaillogin,passwordlogin} from '../Actions/index';
 
  class Login extends Component {
-  constructor(props){
-     super(props);
-     this.state = {
-       email : '',
-       password : '',
-     };
+  _onPasswordChanged = (text) =>{
+    this.props.passwordlogin(text);
+  }
+  _onEmailChanged = (text) =>{
+    this.props.emaillogin(text);
   }
   render(){
     this._handleResponse();
@@ -28,20 +27,23 @@ import {login} from '../Actions/index';
        <TextInput
          style={styles.TextInputView}
          placeholder="Email"
-         onChangeText={(email) => this.setState({email})}
-         value={this.state.emailid}
+         onChangeText={(email) => this._onEmailChanged(email)}
+         value={this.props.ActiveUser.emailid}
        />
        <TextInput
          style={styles.TextInputView}
          placeholder="Password"
-         onChangeText={(password) => this.setState({password})}
-         value={this.state.password}
+         onChangeText={(password) => this._onPasswordChanged(password)}
+         value={this.props.ActiveUser.password}
          secureTextEntry={true}
        />
+       <View style={styles.errorContainer}>
+          {this._handleValidation()}
+       </View>
        </View>
 
        <TouchableOpacity
-        onPress={() => this.props.login(this.state.email,this.state.password)}>
+        onPress={() => this.props.login(this.props.ActiveUser.emailid,this.props.ActiveUser.password)}>
        <View style={styles.ButtonContainer}>
          <Text style={styles.textStyle}>Sign In</Text>
        </View>
@@ -50,17 +52,25 @@ import {login} from '../Actions/index';
     )
   }
   _handleResponse=()=>{
-    console.log('--===---LOG IN-===----'+this.props.ActiveUser);
     if(this.props.ActiveUser){
 
       if(this.props.ActiveUser.code === 200){
-       this.props.ActiveUser=null;
        this.props.navigation.navigate('Home');
 
       }
     }
   }
+  _handleValidation=()=>{
+    if(this.props.ActiveUser.error!==""){
+      return(
+      <View>
+       <Text style={styles.errorText}>{this.props.ActiveUser.error}</Text>
+      </View>
+    );
+    }
+  }
 }
+
 //calling Reducers
 function mapStateToProps(state){
   return {
@@ -69,7 +79,11 @@ function mapStateToProps(state){
   };
 }
 function matchDispatchToProps(dispatch){
-  return bindActionCreators({login : login},dispatch);
+  return bindActionCreators({
+                           login : login,
+                            emaillogin:emaillogin,
+                            passwordlogin:passwordlogin,
+                                  },dispatch);
 }
 
 
@@ -80,7 +94,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   TextView :{
-    height: 200,
+    height: 250,
     backgroundColor: 'skyblue',
     justifyContent: 'space-around',
   },
@@ -103,6 +117,18 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 18,
     color: 'white',
+    alignSelf: 'center',
+  },
+  errorContainer:{
+    height: 60,
+    padding: 10,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  errorText : {
+    padding: 10,
+    fontSize: 15,
+    color: 'red',
     alignSelf: 'center',
   },
 });

@@ -37,8 +37,8 @@ var self
        return(
          <View>
          <Text style={styles.headerText}>UserDetails</Text>
-         <Text style={styles.textContainer}>Name: {this.props.ActiveUser.user.name}</Text>
-         <Text style={styles.textContainer}>EmailId: {this.props.ActiveUser.user.emailid}</Text>
+         <Text style={styles.textContainer}>Name: {this.props.ActiveUser.name}</Text>
+         <Text style={styles.textContainer}>EmailId: {this.props.ActiveUser.emailid}</Text>
          </View>
        )
      }else{
