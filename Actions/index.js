@@ -18,3 +18,24 @@ export const logout = (pointer)=>{
     payload : pointer
   }
 };
+
+export const nametext  = (name)=>{
+  console.log(name);
+  return {
+    type : 'NAME',
+    payload : name
+  }
+};
+
+export const emailtext = (emailid)=>{
+  return{
+    type : "EMAIL",
+    payload : emailid
+  }
+};
+export const passwordtext = (password)=>{
+  return{
+    type : 'PASSWORD',
+    payload : password
+  }
+};

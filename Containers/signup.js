@@ -10,19 +10,13 @@ import {
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {signup} from '../Actions/index';
+import {signup,nametext,emailtext,passwordtext} from '../Actions/index';
 
  class SignUp extends Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      name : '',
-      email :'',
-      password : '',
-    };
-  }
+
 
   render(){
+    console.log("-=-=-=+++++",this.props);
     this._handleResponse();
     return(
       <View style={styles.viewConainer}>
@@ -30,27 +24,31 @@ import {signup} from '../Actions/index';
        <TextInput
          style={styles.TextInputView}
          placeholder="Name"
-         onChangeText={(name) => this.setState({name})}
-         value={this.state.name}
+         onChangeText={(name)=>this.props.nametext(this.props.AuthUser.name)}
+         value={this.props.AuthUser.name}
        />
 
        <TextInput
          style={styles.TextInputView}
          placeholder="Email"
-         onChangeText={(email) => this.setState({email})}
-         value={this.state.email}
+         onChangeText={(emailid)=>this.props.emailtext(this.props.AuthUser.emailid)}
+         value={this.props.AuthUser.emailid}
        />
+
        <TextInput
          style={styles.TextInputView}
          placeholder="Password"
-         onChangeText={(password) => this.setState({password})}
-         value={this.state.password}
+         onChangeText={(password)=>this.props.passwordtext(this.props.AuthUser.password)}
+         value={this.props.AuthUser.password}
          secureTextEntry={true}
        />
+       <View style={styles.errorContainer}>
+          {this._handleValidation()}
+       </View>
        </View>
 
        <TouchableOpacity
-        onPress={() =>this.props.signup(this.state.name,this.state.email,this.state.password)}>
+        onPress={() =>this.props.signup(this.props.StateProp.name,this.props.StateProp.emailid,this.props.StateProp.password)}>
        <View style={styles.ButtonContainer}>
          <Text style={styles.textStyle}>Sign Up</Text>
        </View>
@@ -76,16 +74,32 @@ import {signup} from '../Actions/index';
       }
     }
   }
+
+  _handleValidation=()=>{
+    if(this.props.AuthUser.error!==""){
+      return(
+      <View>
+       <Text style={styles.errorText}>{this.props.Validation.error}</Text>
+      </View>
+    );
+    }
+  }
 }
 function mapStateToProps(state){
   return {
-    InputData: state.InputData,
-    AuthUser: state.AuthUser
+    AuthUser: state.AuthUser,
   };
 }
+
 function matchDispatchToProps(dispatch){
-  return bindActionCreators({signup : signup},dispatch);
+  return bindActionCreators({
+    signup : signup,
+    nametext : nametext,
+    emailtext : emailtext,
+    passwordtext : passwordtext,
+  },dispatch);
 }
+
 const styles = StyleSheet.create({
   viewConainer: {
     flex: 1,
@@ -93,7 +107,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   TextView :{
-    height: 250,
+    height: 350,
     backgroundColor: 'skyblue',
     justifyContent: 'space-around',
   },
@@ -117,7 +131,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'white',
     alignSelf: 'center',
-  }
+  },
+  errorText : {
+    padding: 10,
+    fontSize: 10,
+    color: 'red',
+    alignSelf: 'center',
+  },
 });
 
 export default connect(mapStateToProps,matchDispatchToProps)(SignUp);
